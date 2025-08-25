@@ -1,70 +1,146 @@
+# ====================
 # 機密情報
+# ====================
 service-account-key.json
+credentials.enc
 *.json
-!requirements.txt
+!package.json
+!tsconfig.json
 
+# ====================
 # ログファイル
+# ====================
 *.log
+*.log.*
 logs/
 *.txt.log
 
+# ====================
 # PyInstallerビルド関連
+# ====================
 dist/
 build/
 *.spec
 __pycache__/
 *.py[cod]
 *$py.class
+*.pyo
+*.pyc
 
+# ====================
 # Python仮想環境
+# ====================
 venv/
 env/
 ENV/
 .venv/
 .env
+virtual/
+virtualenv/
 
+# ====================
 # IDE設定
+# ====================
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+.project
+.classpath
+.settings/
+*.sublime-*
 
+# ====================
 # OS関連ファイル
+# ====================
+# Windows
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# macOS
 .DS_Store
 .DS_Store?
 ._*
 .Spotlight-V100
 .Trashes
+.AppleDouble
+.LSOverride
 
+# Linux
+.directory
+.Trash-*
+
+# ====================
 # 一時ファイル
+# ====================
 *.tmp
 *.temp
 *.bak
 *.backup
 *.old
 ~$*
+*.swn
+*.cache
+tmp/
+temp/
 
-# スクリーンショット（テスト用）
+# ====================
+# テストファイル
+# ====================
+# テスト実行時の一時ファイル
+test/*.png
+test/*.jpg
+test/*.jpeg
+test/temp/
+test/__pycache__/
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+.hypothesis/
+
+# ====================
+# スクリーンショット
+# ====================
+screenshots/
+test_screenshots/
 *.png
 *.jpg
 *.jpeg
-screenshots/
-test_screenshots/
+!test/test_*.py
 
-# 設定ファイル（ローカル設定）
+# ====================
+# 設定ファイル（ローカル）
+# ====================
 config.local.ini
 settings.local.json
 .env.local
+*.local
 
-# Windows実行ファイル（配布用は別管理）
+# ====================
+# 実行ファイル
+# ====================
 *.exe
 *.dll
 *.so
 *.dylib
+*.app
+*.out
 
+# ====================
+# プロジェクト固有
+# ====================
 # Serena MCP設定
 .serena/
+
+# 配布用ファイル（別管理）
+release/
+packages/
+
+# デバッグ用ファイル
+debug/
+*.pdb
