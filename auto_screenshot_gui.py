@@ -91,10 +91,11 @@ def get_drive_service():
             password = os.environ.get('SCREENSHOT_PASSWORD')
             if password:
                 cm = CredentialManager()
-                key_data = cm.decrypt_credentials(password)
+                # get_credentials_for_gdriveメソッドを使用
+                key_data = cm.get_credentials_for_gdrive(password=password)
                 if key_data:
                     credentials = service_account.Credentials.from_service_account_info(
-                        json.loads(key_data),
+                        key_data,  # すでにdict形式
                         scopes=SCOPES
                     )
                     return build('drive', 'v3', credentials=credentials)
@@ -269,7 +270,8 @@ class ScreenshotApp:
         if CREDENTIAL_MANAGER_AVAILABLE and os.path.exists('credentials.enc'):
             try:
                 cm = CredentialManager()
-                key_data = cm.decrypt_credentials(input_password)
+                # get_credentials_for_gdriveメソッドを使用（パスワード引数対応）
+                key_data = cm.get_credentials_for_gdrive(password=input_password)
                 if key_data:
                     # パスワードが正しい場合
                     self.login_window.destroy()
