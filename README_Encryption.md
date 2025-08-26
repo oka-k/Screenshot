@@ -137,7 +137,19 @@ Windows環境でのバッチファイル実行時に日本語文字が文字化�
 - `prepare_for_employees_en.bat`: 配布準備用（英語版）
 - `build_secure_en.bat`: セキュアビルド用（英語版）
 
+## トラブルシューティング（追加）
+
+### バッチファイルでPyInstallerが実行されない問題
+- **症状**: `prepare_for_employees_en.bat`実行時にPyInstallerがスキップされる
+- **原因**: Windowsバッチファイルでは外部プログラム呼び出しに`call`コマンドが必要
+- **解決策**: すべてのPython/PyInstaller呼び出しに`call`を追加済み
+  ```batch
+  call python -c "..."
+  call venv\Scripts\pyinstaller.exe ...
+  ```
+
 ## 更新履歴
+- v2.2: バッチファイル修正（`call`コマンド追加でPyInstaller実行問題を解決）
 - v2.1: バッチファイルを英語版に統一（文字化け問題の解消）
 - v2.0: パスワード認証方式に統一（シンプル化）
 - v1.0: 初回リリース

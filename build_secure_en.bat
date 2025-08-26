@@ -29,9 +29,8 @@ if not exist credentials.enc (
     echo Warning: credentials.enc not found
     echo.
     echo Please run the following steps:
-    echo 1. Run encrypt_credentials.bat
-    echo 2. Select password encryption (for employee distribution)
-    echo 3. Set distribution password
+    echo 1. Run prepare_for_employees_en.bat
+    echo 2. Enter password when prompted
     echo ========================================
     echo.
     pause
@@ -48,7 +47,8 @@ if exist *.spec del *.spec
 REM Build with PyInstaller (include encrypted file)
 echo.
 echo Building executable with encrypted credentials...
-pyinstaller --onefile --windowed ^
+echo Executing: pyinstaller --onefile --windowed ...
+call venv\Scripts\pyinstaller.exe --onefile --windowed ^
     --name "AutoScreenshotTool" ^
     --add-data "credentials.enc;." ^
     --hidden-import "credential_manager" ^

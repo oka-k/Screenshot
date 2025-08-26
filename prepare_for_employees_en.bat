@@ -37,7 +37,8 @@ echo You will need to notify employees of this password separately.
 echo.
 
 REM Execute encryption with Python script
-python -c "from credential_manager import CredentialManager; import getpass; cm = CredentialManager(); cm.encrypt_credentials('service-account-key.json', use_machine_binding=False)"
+echo Starting credential encryption...
+call python -c "from credential_manager import CredentialManager; import getpass; cm = CredentialManager(); cm.encrypt_credentials('service-account-key.json', use_machine_binding=False)"
 
 if errorlevel 1 (
     echo.
