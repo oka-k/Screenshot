@@ -98,6 +98,7 @@ def get_drive_service():
     try:
         # 暗号化された認証情報を使用
         from credential_manager import CredentialManager
+        import os  # osモジュールを最初にインポート
         
         # PyInstallerでビルドされた実行ファイルの場合のパス解決
         if getattr(sys, 'frozen', False):
@@ -113,7 +114,6 @@ def get_drive_service():
         
         try:
             # 環境変数からパスワードを取得（従業員配布用）
-            import os
             password = os.environ.get('SCREENSHOT_PASSWORD')
             
             if not password and cred_manager.encrypted_file_path.exists():
