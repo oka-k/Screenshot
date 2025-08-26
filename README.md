@@ -73,8 +73,7 @@ prepare_for_employees_en.bat
 ### 配布ファイル（GUI版）
 ```
 dist/
-├── ScreenshotMonitor.exe    # GUI版実行ファイル（credentials.enc埋め込み済み）
-└── run_monitor.bat          # パスワード入力補助スクリプト
+└── ScreenshotMonitor.exe    # GUI版実行ファイル（認証情報埋め込み済み）
 ```
 
 ### 従業員の実行方法（GUI版）
@@ -82,6 +81,7 @@ dist/
 #### 使い方
 1. `ScreenshotMonitor.exe`をダブルクリック
 2. パスワード入力画面で管理者から通知されたパスワードを入力
+   （ビルド時に設定したパスワード = GUIログインパスワード = 認証情報復号化パスワード）
 3. メイン画面が表示される
 4. 「開始」ボタンで撮影開始、「停止」ボタンで一時停止
 

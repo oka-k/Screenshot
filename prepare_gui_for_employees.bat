@@ -83,22 +83,14 @@ if errorlevel 1 (
     exit /b 1
 )
 
-REM Create distribution batch file
-echo.
-echo Creating distribution launch script...
-echo @echo off > dist\run_monitor.bat
-echo echo Starting Screenshot Monitor >> dist\run_monitor.bat
-echo set /p SCREENSHOT_PASSWORD=Enter password:  >> dist\run_monitor.bat
-echo ScreenshotMonitor.exe >> dist\run_monitor.bat
 
 REM Build success
 echo.
 echo ========================================
 echo Build Complete!
 echo.
-echo Generated files in dist\ folder:
-echo - ScreenshotMonitor.exe (main executable)
-echo - run_monitor.bat (password input helper)
+echo Generated file in dist\ folder:
+echo - ScreenshotMonitor.exe (GUI executable with password protection)
 echo.
 echo ========================================
 echo DISTRIBUTION INSTRUCTIONS
@@ -106,20 +98,18 @@ echo ========================================
 echo.
 echo For each employee:
 echo.
-echo 1. Copy these files to employee PC:
-echo    - ScreenshotMonitor.exe
-echo    - run_monitor.bat (optional)
+echo 1. Copy ScreenshotMonitor.exe to employee PC
 echo.
 echo 2. Share the password securely (in person/phone)
+echo    The password you just set will be used for:
+echo    - GUI login authentication
+echo    - Google Drive credential decryption
 echo.
-echo 3. Employee runs the tool:
-echo    Option A: Double-click run_monitor.bat
-echo    Option B: Run ScreenshotMonitor.exe directly
-echo.
-echo 4. First login:
-echo    - Enter the password you set during encryption
-echo    - Main window appears
-echo    - Click "Start" to begin monitoring
+echo 3. Employee usage:
+echo    a. Double-click ScreenshotMonitor.exe
+echo    b. Enter the password in GUI login screen
+echo    c. Main window appears
+echo    d. Click "Start" to begin monitoring
 echo.
 echo IMPORTANT SECURITY NOTES:
 echo - NEVER share service-account-key.json
