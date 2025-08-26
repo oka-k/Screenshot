@@ -46,7 +46,7 @@ echo You need to set a password to protect the credentials.
 echo Employees will use this password to run the tool.
 echo.
 
-call python -c "from credential_manager import CredentialManager; import getpass; cm = CredentialManager(); p1 = getpass.getpass('Enter password: '); p2 = getpass.getpass('Confirm password: '); exit(1) if p1 != p2 else cm.encrypt_credentials('service-account-key.json', p1) or print('\nCredentials encrypted successfully!')"
+call python -c "from credential_manager import CredentialManager; import getpass; cm = CredentialManager(); p1 = getpass.getpass('Enter password: '); p2 = getpass.getpass('Confirm password: '); exit(1) if p1 != p2 else cm.encrypt_credentials('service-account-key.json', password=p1, use_machine_binding=False) or print('\nCredentials encrypted successfully!')"
 
 if errorlevel 1 (
     echo.

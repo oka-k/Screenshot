@@ -87,14 +87,14 @@ class CredentialManager:
         combined = ''.join(machine_info)
         return hashlib.sha256(combined.encode()).hexdigest()[:16]
     
-    def encrypt_credentials(self, json_file_path: str, password: str = None, use_machine_binding: bool = None):
+    def encrypt_credentials(self, json_file_path: str, password: str = None, use_machine_binding: bool = False):
         """
         JSONファイルを暗号化
         
         Args:
             json_file_path: 元のJSONファイルパス
-            password: 暗号化用パスワード（Noneの場合は対話的に入力）
-            use_machine_binding: マシンに紐付けた暗号化を行うか（passwordより優先）
+            password: 暗号化用パスワード（use_machine_binding=Falseの場合に使用）
+            use_machine_binding: マシンに紐付けた暗号化を行うか
         """
         # JSONファイルを読み込み
         with open(json_file_path, 'r', encoding='utf-8') as f:
@@ -104,10 +104,6 @@ class CredentialManager:
         salt = os.urandom(16)
         
         # 暗号化キーを生成
-        if use_machine_binding is None:
-            # 引数で明示的に指定されていない場合、passwordの有無で判断
-            use_machine_binding = (password is None)
-        
         if use_machine_binding:
             # マシンIDを使用した自動暗号化
             machine_id = self._get_machine_id()
