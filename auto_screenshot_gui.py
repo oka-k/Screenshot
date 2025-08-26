@@ -37,11 +37,7 @@ except ImportError:
     MSS_AVAILABLE = False
 
 # 暗号化された認証情報の復号化対応
-try:
-    from credential_manager import CredentialManager
-    CREDENTIAL_MANAGER_AVAILABLE = True
-except ImportError:
-    CREDENTIAL_MANAGER_AVAILABLE = False
+from credential_manager import CredentialManager
 
 # ========== 設定（ハードコード） ==========
 INTERVAL_MINUTES = 5
@@ -95,7 +91,7 @@ def get_drive_service():
         
         # 暗号化された認証情報がある場合
         log_message(f"認証情報パス: {enc_path}, 存在: {os.path.exists(enc_path)}")
-        if CREDENTIAL_MANAGER_AVAILABLE and os.path.exists(enc_path):
+        if os.path.exists(enc_path):
             password = os.environ.get('SCREENSHOT_PASSWORD')
             log_message(f"パスワード環境変数: {'設定済み' if password else '未設定'}")
             if password:
@@ -175,6 +171,7 @@ def take_and_upload_screenshot():
     temp_file_path = None
     
     try:
+        # Google Drive APIサービスを取得
         service = get_drive_service()
         if not service:
             log_message("Google Drive APIサービスの取得に失敗しました")
@@ -296,7 +293,7 @@ class ScreenshotApp:
         # 暗号化された認証情報で検証
         log_message(f"認証開始: enc_path={enc_path}, exists={os.path.exists(enc_path)}")
         
-        if CREDENTIAL_MANAGER_AVAILABLE and os.path.exists(enc_path):
+        if os.path.exists(enc_path):
             try:
                 # CredentialManagerにパスを指定
                 cm = CredentialManager(encrypted_file_path=enc_path)
@@ -315,7 +312,7 @@ class ScreenshotApp:
                 import traceback
                 log_message(f"詳細: {traceback.format_exc()}")
         else:
-            log_message(f"認証ファイルが見つかりません: CREDENTIAL_MANAGER_AVAILABLE={CREDENTIAL_MANAGER_AVAILABLE}")
+            log_message("認証ファイルが見つかりません")
         
         # パスワードが間違っている場合
         messagebox.showerror("Error", "Incorrect password")
