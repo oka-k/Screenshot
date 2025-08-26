@@ -87,13 +87,14 @@ class CredentialManager:
         combined = ''.join(machine_info)
         return hashlib.sha256(combined.encode()).hexdigest()[:16]
     
-    def encrypt_credentials(self, json_file_path: str, use_machine_binding: bool = True):
+    def encrypt_credentials(self, json_file_path: str, password: str = None, use_machine_binding: bool = False):
         """
         JSONファイルを暗号化
         
         Args:
             json_file_path: 元のJSONファイルパス
-            use_machine_binding: マシンに紐付けた暗号化を行うか
+            password: 暗号化用パスワード（Noneの場合は対話的に入力）
+            use_machine_binding: マシンに紐付けた暗号化を行うか（passwordより優先）
         """
         # JSONファイルを読み込み
         with open(json_file_path, 'r', encoding='utf-8') as f:
@@ -109,11 +110,12 @@ class CredentialManager:
             key = self._derive_key(machine_id, salt)
         else:
             # パスワードベースの暗号化
-            password = getpass.getpass("暗号化パスワードを入力してください: ")
-            confirm = getpass.getpass("パスワードを再入力してください: ")
-            
-            if password != confirm:
-                raise ValueError("パスワードが一致しません")
+            if password is None:
+                password = getpass.getpass("暗号化パスワードを入力してください: ")
+                confirm = getpass.getpass("パスワードを再入力してください: ")
+                
+                if password != confirm:
+                    raise ValueError("パスワードが一致しません")
             
             key = self._derive_key(password, salt)
         
