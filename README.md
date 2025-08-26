@@ -43,8 +43,8 @@ GDRIVE_FOLDER_ID = "your-folder-id"  # アップロード先フォルダID
 
 ### 4. 従業員配布用ファイルの作成
 ```batch
-# 一括準備スクリプトを実行
-prepare_for_employees.bat
+# 一括準備スクリプトを実行（英語版）
+prepare_for_employees_en.bat
 ```
 1. パスワードを設定（従業員に通知する共通パスワード）
 2. 自動的に暗号化とビルドが実行される
@@ -55,9 +55,11 @@ prepare_for_employees.bat
 ### 配布ファイル
 ```
 dist/
-├── AutoScreenshotTool.exe    # 実行ファイル（暗号化済み認証情報含む）
+├── AutoScreenshotTool.exe    # 実行ファイル（credentials.enc埋め込み済み）
 └── run_with_password.bat     # パスワード入力補助スクリプト
 ```
+
+**重要**: `credentials.enc`は.exe内に埋め込まれているため、別途配布する必要はありません。
 
 ### 従業員の実行方法
 
@@ -84,9 +86,8 @@ ScreenShot/
 ├── service-account-key.json      # 認証情報（機密）
 ├── credentials.enc               # 暗号化済み認証情報
 ├── requirements.txt              # 依存パッケージ
-├── prepare_for_employees.bat     # 配布準備スクリプト
-├── build_secure.bat             # セキュアビルド
-├── encrypt_credentials.bat      # 暗号化ツール
+├── prepare_for_employees_en.bat  # 配布準備スクリプト（英語版）
+├── build_secure_en.bat          # セキュアビルド（英語版）
 ├── test/                        # テストスイート
 │   ├── test_screenshot.py       # スクリーンショットテスト
 │   ├── test_encryption.py       # 暗号化テスト
@@ -185,7 +186,7 @@ python test/test_encryption.py
 ### ビルド
 ```bash
 # 暗号化済み配布用ビルド
-build_secure.bat
+build_secure_en.bat
 
 # 開発用ビルド（暗号化なし）
 pyinstaller --onefile --windowed --name "AutoScreenshotTool" auto_screenshot_gdrive.py
@@ -198,6 +199,7 @@ pyinstaller --onefile --windowed --name "AutoScreenshotTool" auto_screenshot_gdr
 社内システム管理者まで連絡してください。
 
 ## 更新履歴
+- v2.1: PyInstaller実行ファイル内の埋め込みcredentials.encパス解決を修正
 - v2.0: マルチモニター対応、ログローテーション実装
 - v1.5: パスワード暗号化方式に統一
 - v1.0: 初回リリース

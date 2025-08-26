@@ -99,8 +99,17 @@ def get_drive_service():
         # 暗号化された認証情報を使用
         from credential_manager import CredentialManager
         
-        # 暗号化マネージャーを初期化
-        cred_manager = CredentialManager()
+        # PyInstallerでビルドされた実行ファイルの場合のパス解決
+        if getattr(sys, 'frozen', False):
+            # PyInstallerでビルドされた実行ファイルの場合
+            base_path = sys._MEIPASS
+            encrypted_file = os.path.join(base_path, 'credentials.enc')
+        else:
+            # 通常のPythonスクリプトの場合
+            encrypted_file = 'credentials.enc'
+        
+        # 暗号化マネージャーを初期化（正しいパスを指定）
+        cred_manager = CredentialManager(encrypted_file_path=encrypted_file)
         
         try:
             # 環境変数からパスワードを取得（従業員配布用）
