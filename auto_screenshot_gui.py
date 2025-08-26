@@ -94,8 +94,10 @@ def get_drive_service():
             enc_path = 'credentials.enc'
         
         # 暗号化された認証情報がある場合
+        log_message(f"認証情報パス: {enc_path}, 存在: {os.path.exists(enc_path)}")
         if CREDENTIAL_MANAGER_AVAILABLE and os.path.exists(enc_path):
             password = os.environ.get('SCREENSHOT_PASSWORD')
+            log_message(f"パスワード環境変数: {'設定済み' if password else '未設定'}")
             if password:
                 cm = CredentialManager(encrypted_file_path=enc_path)
                 # get_credentials_for_gdriveメソッドを使用
@@ -105,7 +107,11 @@ def get_drive_service():
                         key_data,  # すでにdict形式
                         scopes=SCOPES
                     )
-                    return build('drive', 'v3', credentials=credentials)
+                    service = build('drive', 'v3', credentials=credentials)
+                    log_message("Google Drive APIサービスの初期化に成功しました")
+                    return service
+                else:
+                    log_message("認証情報の復号化に失敗しました")
         
         # 通常のサービスアカウントファイル
         if getattr(sys, 'frozen', False):
@@ -124,10 +130,14 @@ def get_drive_service():
             scopes=SCOPES
         )
         
-        return build('drive', 'v3', credentials=credentials)
+        service = build('drive', 'v3', credentials=credentials)
+        log_message("Google Drive APIサービスの初期化に成功しました（通常認証使用）")
+        return service
         
     except Exception as e:
         log_message(f"Google Drive API初期化エラー: {str(e)}")
+        import traceback
+        log_message(f"詳細: {traceback.format_exc()}")
         return None
 
 def upload_to_gdrive(file_path, file_name, service):
