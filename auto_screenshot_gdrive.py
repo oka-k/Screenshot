@@ -13,9 +13,16 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 from pathlib import Path
 import tempfile
+import getpass
 
 import schedule
 import pyautogui
+try:
+    import mss
+    from PIL import Image
+    MSS_AVAILABLE = True
+except ImportError:
+    MSS_AVAILABLE = False
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
@@ -98,7 +105,6 @@ def get_drive_service():
     try:
         # 暗号化された認証情報を使用
         from credential_manager import CredentialManager
-        import os  # osモジュールを最初にインポート
         
         # PyInstallerでビルドされた実行ファイルの場合のパス解決
         if getattr(sys, 'frozen', False):
@@ -118,7 +124,6 @@ def get_drive_service():
             
             if not password and cred_manager.encrypted_file_path.exists():
                 # パスワードが環境変数にない場合、プロンプトで入力
-                import getpass
                 password = getpass.getpass("認証パスワードを入力してください: ")
             
             # 暗号化された認証情報を復号化
@@ -241,8 +246,8 @@ def take_and_upload_screenshot():
         
         try:
             # mssを使用して全モニターを含む仮想画面を撮影
-            import mss
-            from PIL import Image
+            if not MSS_AVAILABLE:
+                raise ImportError("mss not available")
             
             with mss.mss() as sct:
                 # monitors[0]は全モニターを含む仮想画面
