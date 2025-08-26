@@ -178,11 +178,12 @@ def upload_to_gdrive(local_file_path, file_name, service):
             resumable=True
         )
         
-        # ファイルをアップロード
+        # ファイルをアップロード（共有ドライブ対応）
         file = service.files().create(
             body=file_metadata,
             media_body=media,
-            fields='id, name'
+            fields='id, name',
+            supportsAllDrives=True
         ).execute()
         
         log_message(f"アップロード成功: {file_name} (ID: {file.get('id')})")
