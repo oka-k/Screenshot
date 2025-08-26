@@ -228,34 +228,37 @@ class ScreenshotApp:
         """パスワード認証画面"""
         self.login_window = tk.Tk()
         self.login_window.title("Screenshot Tool - Login")
-        self.login_window.geometry("300x150")
         self.login_window.resizable(False, False)
-        
-        # ウィンドウを中央に配置
-        self.login_window.update_idletasks()
-        width = self.login_window.winfo_width()
-        height = self.login_window.winfo_height()
-        x = (self.login_window.winfo_screenwidth() // 2) - (width // 2)
-        y = (self.login_window.winfo_screenheight() // 2) - (height // 2)
-        self.login_window.geometry(f'{width}x{height}+{x}+{y}')
         
         # パスワード入力フィールド
         frame = ttk.Frame(self.login_window, padding="20")
         frame.pack(fill=tk.BOTH, expand=True)
         
-        ttk.Label(frame, text="Password:").pack(pady=(10, 5))
+        ttk.Label(frame, text="Password:", font=('', 11)).pack(pady=(20, 10))
         
-        self.password_entry = ttk.Entry(frame, show="*", width=25)
-        self.password_entry.pack(pady=5)
+        self.password_entry = ttk.Entry(frame, show="*", width=30, font=('', 11))
+        self.password_entry.pack(pady=10)
         self.password_entry.focus()
         
         # Enterキーでログイン
         self.password_entry.bind('<Return>', lambda e: self.verify_password())
         
-        ttk.Button(frame, text="OK", command=self.verify_password).pack(pady=10)
+        ttk.Button(frame, text="OK", width=15, command=self.verify_password).pack(pady=15)
         
         # ウィンドウ閉じるボタンでアプリ終了
         self.login_window.protocol("WM_DELETE_WINDOW", self.quit_app)
+        
+        # ウィンドウサイズを自動調整してから中央配置
+        self.login_window.update_idletasks()
+        self.login_window.geometry("")  # 自動サイズ調整
+        self.login_window.update_idletasks()
+        
+        # 中央配置
+        width = self.login_window.winfo_reqwidth()
+        height = self.login_window.winfo_reqheight()
+        x = (self.login_window.winfo_screenwidth() // 2) - (width // 2)
+        y = (self.login_window.winfo_screenheight() // 2) - (height // 2)
+        self.login_window.geometry(f'+{x}+{y}')
         
         self.login_window.mainloop()
     
@@ -289,31 +292,40 @@ class ScreenshotApp:
         """メイン画面を表示"""
         self.root = tk.Tk()
         self.root.title("Screenshot Monitor")
-        self.root.geometry("300x150")
         self.root.resizable(False, False)
-        
-        # ウィンドウを中央に配置
-        self.root.update_idletasks()
-        width = self.root.winfo_width()
-        height = self.root.winfo_height()
-        x = (self.root.winfo_screenwidth() // 2) - (width // 2)
-        y = (self.root.winfo_screenheight() // 2) - (height // 2)
-        self.root.geometry(f'{width}x{height}+{x}+{y}')
         
         # メインフレーム
         frame = ttk.Frame(self.root, padding="20")
         frame.pack(fill=tk.BOTH, expand=True)
         
         # 状態表示ラベル
-        self.status_label = ttk.Label(frame, text="状態: 停止中", font=('', 12))
-        self.status_label.pack(pady=10)
+        self.status_label = ttk.Label(frame, text="状態: 停止中", font=('', 14, 'bold'))
+        self.status_label.pack(pady=(30, 20))
         
         # 制御ボタン
-        self.control_button = ttk.Button(frame, text="開始", command=self.toggle_recording)
-        self.control_button.pack(pady=10)
+        self.control_button = ttk.Button(frame, text="開始", width=20, 
+                                        command=self.toggle_recording,
+                                        style='Large.TButton')
+        self.control_button.pack(pady=20)
+        
+        # ボタンスタイルの設定
+        style = ttk.Style()
+        style.configure('Large.TButton', font=('', 12))
         
         # ウィンドウ閉じるボタンの動作を設定
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
+        
+        # ウィンドウサイズを自動調整してから中央配置
+        self.root.update_idletasks()
+        self.root.geometry("")  # 自動サイズ調整
+        self.root.update_idletasks()
+        
+        # 中央配置
+        width = self.root.winfo_reqwidth()
+        height = self.root.winfo_reqheight()
+        x = (self.root.winfo_screenwidth() // 2) - (width // 2)
+        y = (self.root.winfo_screenheight() // 2) - (height // 2)
+        self.root.geometry(f'+{x}+{y}')
         
         # 初期化完了ログ
         log_message("=== Screenshot Monitor GUI 起動 ===")
