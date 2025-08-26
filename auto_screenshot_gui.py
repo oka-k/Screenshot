@@ -149,17 +149,18 @@ def upload_to_gdrive(file_path, file_name, service):
         file = service.files().create(
             body=file_metadata,
             media_body=media,
-            fields='id'
+            fields='id, name',
+            supportsAllDrives=True
         ).execute()
         
-        log_message(f"アップロード成功: {file_name} (File ID: {file.get('id')})")
+        log_message(f"アップロード成功: {file_name} (ID: {file.get('id')})")
         return True
         
     except HttpError as error:
         if error.resp.status == 404:
             log_message(f"エラー: 指定されたフォルダIDが見つかりません: {GDRIVE_FOLDER_ID}")
         else:
-            log_message(f"アップロードエラー: {error}")
+            log_message(f"アップロードエラー (HTTP {error.resp.status}): {str(error)}")
         return False
     except Exception as e:
         log_message(f"アップロードエラー: {str(e)}")
