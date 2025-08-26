@@ -14,7 +14,7 @@
 
 2. **従業員配布用ファイルの作成**
    ```batch
-   prepare_for_employees.bat
+   prepare_for_employees_en.bat
    ```
    実行すると：
    - パスワード設定を求められます（2回入力）
@@ -77,7 +77,7 @@
 
 #### 「認証パスワードを入力してください」が表示されない
 - **原因**: credentials.encが実行ファイルに含まれていない
-- **解決**: prepare_for_employees.batで再ビルド
+- **解決**: prepare_for_employees_en.batで再ビルド
 
 #### 「認証情報の取得に失敗しました」エラー
 - **原因**: パスワードが間違っている
@@ -105,8 +105,8 @@ ScreenShot/
 ├── credentials.enc               # 暗号化済み認証情報
 ├── auto_screenshot_gdrive.py     # メインプログラム
 ├── credential_manager.py         # 暗号化管理モジュール
-├── prepare_for_employees.bat     # 配布準備スクリプト
-└── build_secure.bat             # セキュアビルドスクリプト
+├── prepare_for_employees_en.bat  # 配布準備スクリプト（英語版）
+└── build_secure_en.bat          # セキュアビルドスクリプト（英語版）
 ```
 
 ### 従業員環境（配布後）
@@ -130,6 +130,14 @@ AutoScreenshot/
 2. 実行ファイルを外部に漏らさない
 3. 退職時は実行ファイルを削除
 
+## バッチファイルについて
+
+### 文字エンコーディング問題への対応
+Windows環境でのバッチファイル実行時に日本語文字が文字化けする問題を回避するため、英語版のバッチファイルを使用しています：
+- `prepare_for_employees_en.bat`: 配布準備用（英語版）
+- `build_secure_en.bat`: セキュアビルド用（英語版）
+
 ## 更新履歴
+- v2.1: バッチファイルを英語版に統一（文字化け問題の解消）
 - v2.0: パスワード認証方式に統一（シンプル化）
 - v1.0: 初回リリース
