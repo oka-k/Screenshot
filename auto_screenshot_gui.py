@@ -86,11 +86,18 @@ def log_message(message):
 def get_drive_service():
     """Google Drive APIサービスを取得"""
     try:
+        # PyInstallerでビルドされた場合のパスを取得
+        if getattr(sys, 'frozen', False):
+            base_path = sys._MEIPASS
+            enc_path = os.path.join(base_path, 'credentials.enc')
+        else:
+            enc_path = 'credentials.enc'
+        
         # 暗号化された認証情報がある場合
-        if CREDENTIAL_MANAGER_AVAILABLE and os.path.exists('credentials.enc'):
+        if CREDENTIAL_MANAGER_AVAILABLE and os.path.exists(enc_path):
             password = os.environ.get('SCREENSHOT_PASSWORD')
             if password:
-                cm = CredentialManager()
+                cm = CredentialManager(encrypted_file_path=enc_path)
                 # get_credentials_for_gdriveメソッドを使用
                 key_data = cm.get_credentials_for_gdrive(password=password)
                 if key_data:
@@ -269,19 +276,36 @@ class ScreenshotApp:
         # 環境変数に保存（credential_manager用）
         os.environ['SCREENSHOT_PASSWORD'] = input_password
         
+        # PyInstallerでビルドされた場合のパスを取得
+        if getattr(sys, 'frozen', False):
+            base_path = sys._MEIPASS
+            enc_path = os.path.join(base_path, 'credentials.enc')
+        else:
+            enc_path = 'credentials.enc'
+        
         # 暗号化された認証情報で検証
-        if CREDENTIAL_MANAGER_AVAILABLE and os.path.exists('credentials.enc'):
+        log_message(f"認証開始: enc_path={enc_path}, exists={os.path.exists(enc_path)}")
+        
+        if CREDENTIAL_MANAGER_AVAILABLE and os.path.exists(enc_path):
             try:
-                cm = CredentialManager()
+                # CredentialManagerにパスを指定
+                cm = CredentialManager(encrypted_file_path=enc_path)
                 # get_credentials_for_gdriveメソッドを使用（パスワード引数対応）
                 key_data = cm.get_credentials_for_gdrive(password=input_password)
                 if key_data:
                     # パスワードが正しい場合
+                    log_message("パスワード認証成功")
                     self.login_window.destroy()
                     self.show_main_window()
                     return
+                else:
+                    log_message("認証情報の取得に失敗")
             except Exception as e:
                 log_message(f"パスワード検証エラー: {str(e)}")
+                import traceback
+                log_message(f"詳細: {traceback.format_exc()}")
+        else:
+            log_message(f"認証ファイルが見つかりません: CREDENTIAL_MANAGER_AVAILABLE={CREDENTIAL_MANAGER_AVAILABLE}")
         
         # パスワードが間違っている場合
         messagebox.showerror("Error", "Incorrect password")
