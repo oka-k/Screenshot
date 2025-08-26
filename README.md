@@ -8,20 +8,28 @@ Windowsバックグラウンドで動作し、定期的にスクリーンショ�
 - **マルチモニター対応**: 全モニターを1枚の画像に結合
 - **Googleドライブ自動アップロード**: サービスアカウント認証で安全にアップロード
 - **暗号化認証情報**: APIキーを暗号化して配布（従業員に生のキーを渡さない）
+- **GUI制御画面**: 撮影の開始/停止を簡単に制御
+- **パスワード保護**: 初回起動時のパスワード認証
 - **ログローテーション**: ログファイルの自動管理（10MB、5世代）
-- **バックグラウンド動作**: ウィンドウを表示せずに静かに実行
 
 ## システム要件
 - Windows 10/11
 - Python 3.9以上（開発環境のみ）
 - インターネット接続
 
+## GUI版の新機能
+### 3つのシンプルな機能
+1. **撮影のオン/オフ切り替え** - ボタン1つで制御
+2. **撮影状態の表示** - 現在の状態を明確に表示
+3. **パスワード認証** - 初回起動時の安全な認証
+
 ## セットアップ（管理者向け）
 
 ### 1. 必要なファイルの準備
 ```
 ScreenShot/
-├── auto_screenshot_gdrive.py     # メインプログラム
+├── auto_screenshot_gui.py        # GUI版メインプログラム（NEW）
+├── auto_screenshot_gdrive.py     # CLI版メインプログラム
 ├── credential_manager.py         # 暗号化管理モジュール
 ├── service-account-key.json      # Googleサービスアカウントキー（要取得）
 └── requirements.txt              # 依存パッケージリスト
@@ -35,59 +43,64 @@ ScreenShot/
 5. 共有ドライブの特定フォルダにアクセス権限を付与
 
 ### 3. 設定の変更
-`auto_screenshot_gdrive.py`の定数を編集：
+`auto_screenshot_gui.py`の定数を編集（ハードコード）：
 ```python
 INTERVAL_MINUTES = 5  # スクリーンショット間隔
 GDRIVE_FOLDER_ID = "your-folder-id"  # アップロード先フォルダID
 ```
 
 ### 4. 従業員配布用ファイルの作成
+
+#### GUI版の場合（推奨）
 ```batch
-# 一括準備スクリプトを実行（英語版）
+# GUI版の配布準備
+prepare_gui_for_employees.bat
+```
+
+#### CLI版の場合
+```batch
+# CLI版の配布準備
 prepare_for_employees_en.bat
 ```
+
+両方とも：
 1. パスワードを設定（従業員に通知する共通パスワード）
 2. 自動的に暗号化とビルドが実行される
 3. `dist/`フォルダに配布用ファイルが生成される
 
 ## 従業員への配布
 
-### 配布ファイル
+### 配布ファイル（GUI版）
 ```
 dist/
-├── AutoScreenshotTool.exe    # 実行ファイル（credentials.enc埋め込み済み）
-└── run_with_password.bat     # パスワード入力補助スクリプト
+├── ScreenshotMonitor.exe    # GUI版実行ファイル（credentials.enc埋め込み済み）
+└── run_monitor.bat          # パスワード入力補助スクリプト
 ```
 
-**重要**: `credentials.enc`は.exe内に埋め込まれているため、別途配布する必要はありません。
+### 従業員の実行方法（GUI版）
 
-### 従業員の実行方法
-
-#### 方法1: 簡単な起動（推奨）
-1. `run_with_password.bat`をダブルクリック
-2. 管理者から通知されたパスワードを入力
-3. 自動的にツールが起動
-
-#### 方法2: 環境変数設定（上級者向け）
-1. 環境変数`SCREENSHOT_PASSWORD`にパスワードを設定
-2. `AutoScreenshotTool.exe`を直接実行
-
-#### 方法3: 直接実行
-1. `AutoScreenshotTool.exe`をダブルクリック
-2. コマンドプロンプトでパスワード入力
+#### 使い方
+1. `ScreenshotMonitor.exe`をダブルクリック
+2. パスワード入力画面で管理者から通知されたパスワードを入力
+3. メイン画面が表示される
+4. 「開始」ボタンで撮影開始、「停止」ボタンで一時停止
 
 ## ファイル構成
 
 ### 開発環境
 ```
 ScreenShot/
-├── auto_screenshot_gdrive.py     # メインプログラム
+├── auto_screenshot_gui.py        # GUI版メインプログラム
+├── auto_screenshot_gdrive.py     # CLI版メインプログラム
 ├── credential_manager.py         # 暗号化管理
 ├── service-account-key.json      # 認証情報（機密）
 ├── credentials.enc               # 暗号化済み認証情報
 ├── requirements.txt              # 依存パッケージ
-├── prepare_for_employees_en.bat  # 配布準備スクリプト（英語版）
-├── build_secure_en.bat          # セキュアビルド（英語版）
+├── GUI設計書.md                  # GUI仕様書
+├── prepare_gui_for_employees.bat # GUI版配布準備
+├── build_gui.bat                # GUI版ビルド
+├── prepare_for_employees_en.bat  # CLI版配布準備
+├── build_secure_en.bat          # CLI版セキュアビルド
 ├── test/                        # テストスイート
 │   ├── test_screenshot.py       # スクリーンショットテスト
 │   ├── test_encryption.py       # 暗号化テスト
@@ -97,7 +110,9 @@ ScreenShot/
 │   └── run_all_tests.py        # 統合テスト実行
 ├── README.md                    # このファイル
 ├── README_Encryption.md         # 暗号化詳細ガイド
+├── README_GoogleDrive.md        # Google Drive設定ガイド
 ├── CLAUDE.md                   # AI開発支援用
+├── 設計書.md                    # 技術設計書
 └── .gitignore                  # Git除外設定
 ```
 
@@ -113,8 +128,12 @@ ScreenShot/
 ### スクリーンショット
 - **ライブラリ**: mss（高速、マルチモニター対応）
 - **形式**: PNG（可逆圧縮）
-- **命名規則**: `YYYYMMDD-ユーザー名.png`（JST時刻）
-- **重複時**: `YYYYMMDD-ユーザー名_HHMMSS.png`
+- **命名規則**: `YYYYMMDD-ユーザー名_HHMMSS.png`（JST時刻）
+
+### GUI
+- **フレームワーク**: tkinter（Python標準）
+- **画面**: パスワード入力画面 → メイン制御画面
+- **制御**: 撮影開始/停止のトグル
 
 ### 暗号化
 - **アルゴリズム**: Fernet（AES-128）
@@ -124,7 +143,7 @@ ScreenShot/
 ### ログ管理
 - **最大サイズ**: 10MB
 - **世代数**: 5世代
-- **形式**: `[YYYY-MM-DD HH:MM:SS] レベル - メッセージ`
+- **形式**: `[YYYY-MM-DD HH:MM:SS] メッセージ`
 
 ### Google Drive連携
 - **API**: Google Drive API v3
@@ -140,7 +159,7 @@ ScreenShot/
 - または、Windowsセキュリティの除外リストに追加
 
 #### パスワードエラー
-- 正しいパスワードを入力しているか確認
+- 暗号化時に設定したパスワードと同じものを入力
 - 大文字小文字を区別します
 
 #### アップロードエラー
@@ -149,8 +168,8 @@ ScreenShot/
 
 ### ログファイルの確認
 ```
-[2024-01-25 10:30:00] INFO - スクリーンショット撮影開始
-[2024-01-25 10:30:01] INFO - アップロード成功: 20240125-user.png
+[2024-01-25 10:30:00] スクリーンショット撮影開始
+[2024-01-25 10:30:01] アップロード成功: 20240125-user.png
 ```
 
 ## セキュリティ
@@ -163,6 +182,7 @@ ScreenShot/
 ### セキュリティ対策
 - 認証情報の暗号化（AES-128）
 - パスワード保護による配布
+- GUI起動時のパスワード認証
 - .gitignoreによる機密情報の除外
 - ログファイルへの機密情報非記録
 
@@ -185,11 +205,17 @@ python test/test_encryption.py
 
 ### ビルド
 ```bash
-# 暗号化済み配布用ビルド
-build_secure_en.bat
+# GUI版の暗号化済み配布用ビルド
+prepare_gui_for_employees.bat
 
-# 開発用ビルド（暗号化なし）
-pyinstaller --onefile --windowed --name "AutoScreenshotTool" auto_screenshot_gdrive.py
+# GUI版の開発用ビルド
+build_gui.bat
+
+# CLI版の暗号化済み配布用ビルド
+prepare_for_employees_en.bat
+
+# CLI版の開発用ビルド
+build_secure_en.bat
 ```
 
 ## ライセンス
@@ -199,6 +225,7 @@ pyinstaller --onefile --windowed --name "AutoScreenshotTool" auto_screenshot_gdr
 社内システム管理者まで連絡してください。
 
 ## 更新履歴
+- v3.0: GUI版追加、撮影制御機能実装
 - v2.1: PyInstaller実行ファイル内の埋め込みcredentials.encパス解決を修正
 - v2.0: マルチモニター対応、ログローテーション実装
 - v1.5: パスワード暗号化方式に統一
